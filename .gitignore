@@ -1,0 +1,16 @@
+# Dependencias
+node_modules/
+
+# Builds
+dist/
+
+# Variables de entorno (nunca se suben, tienen credenciales reales)
+.env
+.env.local
+
+# Archivos temporales de audio del backend
+tmp/
+
+# Editor / OS
+.DS_Store
+.vscode/

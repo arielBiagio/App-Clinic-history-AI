@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  /* paleta */
+  --bg: #F7F6F3;
+  --surface: #FFFFFF;
+  --surface-muted: #F1EFEA;
+  --border: #E4E1D9;
+  --text: #23261F;
+  --text-muted: #7A7A72;
+
+  --teal-bg: #E1F5EE;
+  --teal-text: #085041;
+  --coral-bg: #FAECE7;
+  --coral-text: #993C1D;
+
+  --accent: #2F5D50;
+  --accent-hover: #244A40;
+  --danger: #B3452F;
+
+  /* tipografia */
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+input, textarea {
+  font-family: var(--font-body);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Botones base — cualquier .boton se comporta como pill de tamaño natural.
+   El estiramiento (flex:1) se aplica solo donde corresponde (modal, login),
+   nunca acá, para que un botón dentro de un header flex no se agrande solo. */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.boton:active {
+  transform: scale(0.97);
+}
+
+.boton--primario {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.boton--primario:hover {
+  background: var(--accent-hover);
+}
+
+.boton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.boton--peligro {
+  background: transparent;
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.boton--peligro:hover {
+  background: var(--coral-bg);
+}
+
+.boton--texto {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 9px 8px;
+}
+
+.boton--texto:hover {
+  color: var(--text);
+}

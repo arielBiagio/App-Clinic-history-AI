@@ -1,0 +1,179 @@
+.lista {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+}
+
+.lista__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.lista__titulo {
+  font-size: 22px;
+}
+
+.lista__nuevo {
+  padding: 7px 14px;
+  font-size: 12.5px;
+  flex-shrink: 0;
+}
+
+.lista__buscar {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  font-size: 14px;
+  background: var(--surface);
+  margin-bottom: 14px;
+}
+
+.lista__buscar:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.lista__items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lista__item-wrap {
+  position: relative;
+}
+
+.lista__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 40px 10px 10px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid transparent;
+  text-align: left;
+  width: 100%;
+}
+
+.lista__item:hover {
+  border-color: var(--border);
+}
+
+.lista__kebab {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.lista__kebab:hover {
+  background: var(--surface-muted);
+}
+
+.lista__menu {
+  position: absolute;
+  right: 4px;
+  top: calc(100% + 2px);
+  z-index: 10;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  min-width: 180px;
+  padding: 4px;
+  animation: entradaMenu 0.12s ease;
+}
+
+@keyframes entradaMenu {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.lista__menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: none;
+  background: none;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.lista__menu-item:hover {
+  background: var(--surface-muted);
+}
+
+.lista__menu-item--peligro {
+  color: var(--danger);
+}
+
+.lista__menu-confirmar {
+  padding: 8px;
+  max-width: 220px;
+}
+
+.lista__menu-confirmar p {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.lista__menu-confirmar-acciones {
+  display: flex;
+  gap: 6px;
+}
+
+.lista__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--teal-bg);
+  color: var(--teal-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.lista__info {
+  flex: 1;
+}
+
+.lista__nombre {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.lista__fecha {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.lista__chevron {
+  color: var(--text-muted);
+}
+
+.lista__vacio {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 32px 12px;
+}
