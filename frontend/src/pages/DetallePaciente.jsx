@@ -92,6 +92,12 @@ export default function DetallePaciente() {
   const [borrador, setBorrador] = useState(null)
   const [guardandoEdicion, setGuardandoEdicion] = useState(false)
   const [confirmandoBorrado, setConfirmandoBorrado] = useState(false)
+  const [toast, setToast] = useState(null)
+
+  function mostrarToast(mensaje) {
+    setToast(mensaje)
+    setTimeout(() => setToast(null), 2000)
+  }
 
   function cargarPaciente() {
     setCargando(true)
@@ -159,6 +165,7 @@ export default function DetallePaciente() {
       await cargarPaciente()
       setEditando(false)
       setBorrador(null)
+      mostrarToast('Cambios guardados ✓')
     } catch (err) {
       setError('No se pudo guardar la edición.')
     } finally {
@@ -179,6 +186,8 @@ export default function DetallePaciente() {
 
   return (
     <div className="detalle">
+      {toast && <div className="detalle__toast">{toast}</div>}
+
       <div className="detalle__header">
         <button
           type="button"
@@ -203,19 +212,23 @@ export default function DetallePaciente() {
       ) : (
         <>
           <div className="detalle__tabs">
-            {paciente.evaluaciones.map((ev, i) => (
-              <button
-                key={ev.id}
-                type="button"
-                className={`detalle__tab ${i === tabActivo ? 'detalle__tab--activo' : ''}`}
-                onClick={() => {
-                  setTabActivo(i)
-                  setEditando(false)
-                }}
-              >
-                {formatearFechaCorta(ev.created_at?.split('T')[0])}
-              </button>
-            ))}
+            {paciente.evaluaciones.map((ev, i) => {
+              const fueEditada = ev.updated_at && ev.updated_at !== ev.created_at
+              return (
+                <button
+                  key={ev.id}
+                  type="button"
+                  className={`detalle__tab ${i === tabActivo ? 'detalle__tab--activo' : ''}`}
+                  onClick={() => {
+                    setTabActivo(i)
+                    setEditando(false)
+                  }}
+                >
+                  {formatearFechaCorta(ev.created_at?.split('T')[0])}
+                  {fueEditada && <span className="detalle__tab-editado"> · editado</span>}
+                </button>
+              )
+            })}
             <button
               type="button"
               className="detalle__tab-nueva"

@@ -10,10 +10,27 @@ create table if not exists evaluaciones (
   id uuid primary key default gen_random_uuid(),
   paciente_id uuid not null references pacientes(id) on delete cascade,
   contenido jsonb not null,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
 create index if not exists evaluaciones_paciente_id_idx on evaluaciones(paciente_id);
+
+-- Actualiza updated_at automáticamente en cualquier UPDATE a la fila,
+-- sin depender de que el código del backend se acuerde de setearlo.
+create or replace function set_updated_at()
+returns trigger as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$ language plpgsql;
+
+drop trigger if exists evaluaciones_set_updated_at on evaluaciones;
+create trigger evaluaciones_set_updated_at
+  before update on evaluaciones
+  for each row
+  execute function set_updated_at();
 
 -- Row Level Security: solo usuarios autenticados pueden leer/escribir.
 -- El backend usa la service_role key y salta esto a propósito (ya valida

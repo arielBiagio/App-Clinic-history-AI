@@ -9,7 +9,7 @@ const router = Router()
 router.get('/', requireAuth, async (req, res) => {
   const { data, error } = await supabaseAdmin
     .from('pacientes')
-    .select('id, nombre, created_at, evaluaciones(created_at)')
+    .select('id, nombre, created_at, evaluaciones(created_at, updated_at)')
 
   if (error) {
     console.error('Error en GET /api/pacientes:', error)
@@ -18,7 +18,11 @@ router.get('/', requireAuth, async (req, res) => {
 
   const pacientes = data
     .map((p) => {
-      const ultimaEvaluacion = p.evaluaciones.map((e) => e.created_at).sort().at(-1) || null
+      // Actividad de cada evaluación = la más tardía entre cuándo se creó
+      // y cuándo se modificó por última vez (editar una evaluación vieja
+      // también cuenta como actividad reciente del paciente).
+      const fechasActividad = p.evaluaciones.flatMap((e) => [e.created_at, e.updated_at])
+      const ultimaEvaluacion = fechasActividad.sort().at(-1) || null
       return {
         id: p.id,
         nombre: p.nombre,
@@ -46,14 +50,21 @@ router.get('/:id', requireAuth, async (req, res) => {
 
   const { data: evaluaciones, error: errorEvaluaciones } = await supabaseAdmin
     .from('evaluaciones')
-    .select('id, contenido, created_at')
+    .select('id, contenido, created_at, updated_at')
     .eq('paciente_id', req.params.id)
-    .order('created_at', { ascending: false })
 
   if (errorEvaluaciones) {
     console.error('Error en GET /api/pacientes/:id:', errorEvaluaciones)
     return res.status(500).json({ error: 'No se pudieron obtener las evaluaciones.' })
   }
+
+  // Orden por actividad más reciente: si una evaluación vieja se edita hoy,
+  // sube al principio igual que si fuera nueva.
+  evaluaciones.sort((a, b) => {
+    const actividadA = a.updated_at > a.created_at ? a.updated_at : a.created_at
+    const actividadB = b.updated_at > b.created_at ? b.updated_at : b.created_at
+    return actividadA < actividadB ? 1 : -1
+  })
 
   res.json({ ...paciente, evaluaciones })
 })

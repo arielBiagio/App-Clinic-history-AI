@@ -1,8 +1,19 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './ModalNuevoPaciente.css'
 
 export default function ModalNuevoPaciente({ onConfirmar, onCancelar }) {
   const [nombre, setNombre] = useState('')
+
+  // Evita que la página de atrás se pueda scrollear en mobile mientras
+  // el modal está abierto (el overlay tapa la pantalla, pero sin esto
+  // el fondo igual se mueve al arrastrar con el dedo).
+  useEffect(() => {
+    const overflowPrevio = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = overflowPrevio
+    }
+  }, [])
 
   function handleConfirmar() {
     const nombreLimpio = nombre.trim()
