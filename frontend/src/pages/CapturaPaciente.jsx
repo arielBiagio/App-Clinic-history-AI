@@ -65,6 +65,10 @@ export default function CapturaPaciente() {
     agregarNota({ tipo: 'texto', contenido })
     setTextoActual('')
     if (textareaRef.current) textareaRef.current.style.height = 'auto'
+
+    // En mobile, cuando el teclado se cierra el layout se achica de golpe
+    // y el scroll puede quedar "de más", mostrando solo el fondo vacío.
+    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'auto' }))
   }
 
   async function handleMic() {

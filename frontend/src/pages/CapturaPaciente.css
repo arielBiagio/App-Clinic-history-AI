@@ -2,6 +2,8 @@
   max-width: 480px;
   margin: 0 auto;
   padding: 1.25rem 1rem 2rem;
+  min-height: 100dvh;
+  box-sizing: border-box;
 }
 
 .captura__header {
@@ -63,8 +65,25 @@
 .captura__input-row {
   display: flex;
   align-items: flex-end;
-  gap: 8px;
+  gap: 6px;
   margin-bottom: 12px;
+}
+
+.captura__boton-agregar {
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+  box-sizing: border-box;
+  border-radius: var(--radius);
+  border: 1px solid var(--accent);
+  background: var(--teal-bg);
+  color: var(--accent);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.captura__boton-agregar:disabled {
+  opacity: 0.4;
 }
 
 .captura__input {

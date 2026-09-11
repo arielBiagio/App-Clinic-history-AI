@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import './Layout.css'
@@ -6,6 +7,12 @@ import './Layout.css'
 export default function Layout() {
   const navigate = useNavigate()
   const location = useLocation()
+
+  // Sin esto, React Router no vuelve el scroll al top al navegar
+  // (a diferencia de la navegación tradicional entre páginas).
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
 
   async function handleSalir() {
     // TODO: una vez conectado Supabase Auth de verdad, esto cierra la sesión.

@@ -1,8 +1,10 @@
 // Metadata lives in the existing JSONB document, outside the clinical fields.
 // Only the server writes this timestamp; no schema migration is required.
 export function fechaEdicion(evaluacion) {
-  const value = evaluacion.updated_at || evaluacion.contenido?._meta?.updated_at
-  return value && Number.isFinite(Date.parse(value)) ? new Date(value).toISOString() : null
+  const fechas = [evaluacion.updated_at, evaluacion.metadata_updated_at, evaluacion.contenido?._meta?.updated_at]
+    .map(Date.parse).filter(Number.isFinite)
+    .filter(fecha => fecha > (Date.parse(evaluacion.created_at) || 0))
+  return fechas.length ? new Date(Math.max(...fechas)).toISOString() : null
 }
 
 export function actividad(evaluacion) {

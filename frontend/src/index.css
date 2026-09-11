@@ -49,6 +49,10 @@ button {
 
 input, textarea {
   font-family: var(--font-body);
+  /* 16px es el mínimo que evita que iOS Safari haga zoom automático al
+     enfocar un campo. El tamaño visual se compensa con line-height/padding
+     en cada componente en vez de bajar este valor. */
+  font-size: 16px;
 }
 
 #root {

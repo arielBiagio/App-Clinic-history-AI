@@ -93,6 +93,12 @@ export default function DetallePaciente() {
   const [borrador, setBorrador] = useState(null)
   const [guardandoEdicion, setGuardandoEdicion] = useState(false)
   const [confirmandoBorrado, setConfirmandoBorrado] = useState(false)
+  const [toast, setToast] = useState(null)
+
+  function mostrarToast(mensaje) {
+    setToast(mensaje)
+    setTimeout(() => setToast(null), 2000)
+  }
 
   function cargarPaciente() {
     setCargando(true)
@@ -161,6 +167,7 @@ export default function DetallePaciente() {
       setTabActivo(0) // La evaluación recién editada pasa a ser la primera.
       setEditando(false)
       setBorrador(null)
+      mostrarToast('Cambios guardados ✓')
     } catch (err) {
       setError('No se pudo guardar la edición.')
     } finally {
@@ -181,6 +188,9 @@ export default function DetallePaciente() {
 
   return (
     <div className="detalle">
+      {toast && <div className="detalle__toast">{toast}</div>}
+
+
         <button
           type="button"
           className="pagina__volver"
@@ -222,6 +232,7 @@ export default function DetallePaciente() {
                 {ev.updated_at && <span className="pill-editado">Editado</span>}
               </button>
             ))}
+
           </div>
 
           {!editando ? (

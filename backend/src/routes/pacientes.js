@@ -10,7 +10,8 @@ const router = Router()
 router.get('/', requireAuth, async (req, res) => {
   const { data, error } = await supabaseAdmin
     .from('pacientes')
-    .select('id, nombre, created_at, evaluaciones(created_at, updated_at:contenido->_meta->>updated_at)')
+    .select('id, nombre, created_at, evaluaciones(created_at, updated_at, metadata_updated_at:contenido->_meta->>updated_at)')
+
 
   if (error) {
     console.error('Error en GET /api/pacientes:', error)
@@ -18,6 +19,7 @@ router.get('/', requireAuth, async (req, res) => {
   }
 
   const pacientes = resumirPacientes(data)
+
 
   res.json(pacientes)
 })
@@ -36,9 +38,8 @@ router.get('/:id', requireAuth, async (req, res) => {
 
   const { data: evaluaciones, error: errorEvaluaciones } = await supabaseAdmin
     .from('evaluaciones')
-    .select('id, contenido, created_at')
+    .select('id, contenido, created_at, updated_at')
     .eq('paciente_id', req.params.id)
-    .order('created_at', { ascending: false })
 
   if (errorEvaluaciones) {
     console.error('Error en GET /api/pacientes/:id:', errorEvaluaciones)
@@ -46,6 +47,7 @@ router.get('/:id', requireAuth, async (req, res) => {
   }
 
   res.json({ ...paciente, evaluaciones: ordenarEvaluaciones(evaluaciones) })
+
 })
 
 // Borra al paciente y, por el "on delete cascade" del schema, también
