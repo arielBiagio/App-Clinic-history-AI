@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { requireAuth } from '../middleware/auth.js'
 import { supabaseAdmin } from '../lib/supabaseClients.js'
+import { resumirPacientes, ordenarEvaluaciones } from '../lib/actividad.js'
 
 const router = Router()
 
@@ -9,25 +10,14 @@ const router = Router()
 router.get('/', requireAuth, async (req, res) => {
   const { data, error } = await supabaseAdmin
     .from('pacientes')
-    .select('id, nombre, created_at, evaluaciones(created_at)')
+    .select('id, nombre, created_at, evaluaciones(created_at, updated_at:contenido->_meta->>updated_at)')
 
   if (error) {
     console.error('Error en GET /api/pacientes:', error)
     return res.status(500).json({ error: 'No se pudo obtener la lista de pacientes.' })
   }
 
-  const pacientes = data
-    .map((p) => {
-      const ultimaEvaluacion = p.evaluaciones.map((e) => e.created_at).sort().at(-1) || null
-      return {
-        id: p.id,
-        nombre: p.nombre,
-        ultimaEvaluacion,
-        actividadReciente: ultimaEvaluacion || p.created_at,
-      }
-    })
-    .sort((a, b) => (a.actividadReciente < b.actividadReciente ? 1 : -1))
-    .map(({ actividadReciente, ...resto }) => resto) // no hace falta exponerlo al frontend
+  const pacientes = resumirPacientes(data)
 
   res.json(pacientes)
 })
@@ -55,7 +45,7 @@ router.get('/:id', requireAuth, async (req, res) => {
     return res.status(500).json({ error: 'No se pudieron obtener las evaluaciones.' })
   }
 
-  res.json({ ...paciente, evaluaciones })
+  res.json({ ...paciente, evaluaciones: ordenarEvaluaciones(evaluaciones) })
 })
 
 // Borra al paciente y, por el "on delete cascade" del schema, también

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { apiDelete, apiGet } from '../lib/api'
 import { formatearFechaRelativa } from '../lib/fechas'
 import './ListaPacientes.css'
+import Loading from '../components/Loading'
 
 export default function ListaPacientes() {
   const navigate = useNavigate()
@@ -63,7 +64,7 @@ export default function ListaPacientes() {
   return (
     <div className="lista">
       <div className="lista__header">
-        <h1 className="lista__titulo">Pacientes</h1>
+        <div><p className="pagina__eyebrow">Historia clínica</p><h1 className="lista__titulo">Pacientes</h1><p className="pagina__subtitulo">Cada historia, a mano.</p></div>
         <button
           type="button"
           className="boton boton--primario lista__nuevo"
@@ -77,11 +78,12 @@ export default function ListaPacientes() {
         type="text"
         className="lista__buscar"
         placeholder="Buscar paciente..."
+        aria-label="Buscar paciente"
         value={busqueda}
         onChange={(e) => setBusqueda(e.target.value)}
       />
 
-      {cargando && <p className="lista__vacio">Cargando pacientes...</p>}
+      {cargando && <Loading label="Cargando pacientes..." />}
       {error && <p className="lista__vacio">{error}</p>}
 
       {!cargando && !error && (
@@ -102,9 +104,9 @@ export default function ListaPacientes() {
                 >
                   <div className="lista__avatar">{iniciales(paciente.nombre)}</div>
                   <div className="lista__info">
-                    <p className="lista__nombre">{paciente.nombre}</p>
+                    <p className="lista__nombre">{paciente.nombre} {paciente.editado && <span className="pill-editado">Editado</span>}</p>
                     <p className="lista__fecha">
-                      Última evaluación · {formatearFechaRelativa(paciente.ultimaEvaluacion)}
+                      Última actividad · {formatearFechaRelativa(paciente.actividadReciente || paciente.ultimaEvaluacion)}
                     </p>
                   </div>
                 </button>

@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import { Navigate } from 'react-router-dom'
 import './Login.css'
+import Loading from '../components/Loading'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -81,7 +82,7 @@ export default function Login() {
             className="boton boton--primario login__boton"
             disabled={cargando}
           >
-            {cargando ? 'Ingresando...' : 'Ingresar'}
+            {cargando ? <Loading inline label="Ingresando..." /> : 'Ingresar'}
           </button>
         </form>
       </div>

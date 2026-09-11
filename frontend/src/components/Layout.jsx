@@ -18,6 +18,7 @@ export default function Layout() {
       <header className="layout__topbar">
         <div className="layout__topbar-inner">
           <Link to="/" className="layout__marca">
+            <span className="layout__marca-mark" aria-hidden="true">HC</span>
             Historia Clínica IA
           </Link>
           <button type="button" className="layout__salir" onClick={handleSalir}>

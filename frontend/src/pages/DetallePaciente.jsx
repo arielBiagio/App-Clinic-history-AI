@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { apiDelete, apiGet, apiPatch } from '../lib/api'
 import { formatearFechaCorta } from '../lib/fechas'
 import './DetallePaciente.css'
+import Loading from '../components/Loading'
 
 const CAMPOS = [
   { key: 'motivo_consulta', label: 'Motivo de consulta', tipo: 'textarea' },
@@ -31,7 +32,7 @@ function Campo({ label, valor }) {
     <div>
       <p className="detalle__campo-label">{label}</p>
       <p className={`detalle__campo-valor ${!valor ? 'detalle__campo-valor--vacio' : ''}`}>
-        {valor || 'No especificado'}
+      {valor ?? 'No especificado'}
       </p>
     </div>
   )
@@ -109,7 +110,7 @@ export default function DetallePaciente() {
   if (cargando) {
     return (
       <div className="detalle">
-        <p className="detalle__vacio">Cargando...</p>
+        <Loading label="Cargando ficha..." />
       </div>
     )
   }
@@ -157,6 +158,7 @@ export default function DetallePaciente() {
       }
       await apiPatch(`/api/evaluaciones/${evaluacionActiva.id}`, { contenido: contenidoLimpio })
       await cargarPaciente()
+      setTabActivo(0) // La evaluación recién editada pasa a ser la primera.
       setEditando(false)
       setBorrador(null)
     } catch (err) {
@@ -179,21 +181,24 @@ export default function DetallePaciente() {
 
   return (
     <div className="detalle">
-      <div className="detalle__header">
         <button
           type="button"
-          className="detalle__volver"
+          className="pagina__volver"
           onClick={() => navigate('/')}
           aria-label="Volver"
         >
-          ←
+          <span aria-hidden="true">←</span> Pacientes
         </button>
+      <div className="detalle__header">
         <div className="detalle__avatar">{iniciales}</div>
+        <div className="detalle__identidad">
         <span className="detalle__nombre">{paciente.nombre}</span>
         <span className="detalle__contador">
           {paciente.evaluaciones.length}{' '}
           {paciente.evaluaciones.length === 1 ? 'evaluación' : 'evaluaciones'}
         </span>
+        </div>
+        <button type="button" className="boton boton--primario detalle__nueva" onClick={() => navigate(`/paciente/${id}/nueva-evaluacion`)}>+ Nueva evaluación</button>
       </div>
 
       {paciente.evaluaciones.length === 0 ? (
@@ -214,21 +219,14 @@ export default function DetallePaciente() {
                 }}
               >
                 {formatearFechaCorta(ev.created_at?.split('T')[0])}
+                {ev.updated_at && <span className="pill-editado">Editado</span>}
               </button>
             ))}
-            <button
-              type="button"
-              className="detalle__tab-nueva"
-              onClick={() => navigate(`/paciente/${id}/nueva-evaluacion`)}
-              aria-label="Nueva evaluación"
-              title="Nueva evaluación"
-            >
-              +
-            </button>
           </div>
 
           {!editando ? (
-            <div className="detalle__campos">
+            <div key={evaluacionActiva.id} className="detalle__campos">
+              {evaluacionActiva.updated_at && <p className="detalle__edicion">Editado · {new Date(evaluacionActiva.updated_at).toLocaleString('es-AR')}</p>}
               <Campo label="Motivo de consulta" valor={evaluacionActiva.contenido.motivo_consulta} />
 
               <div className="detalle__fila">
@@ -317,7 +315,7 @@ export default function DetallePaciente() {
                   onClick={handleGuardarEdicion}
                   disabled={guardandoEdicion}
                 >
-                  {guardandoEdicion ? 'Guardando...' : 'Guardar cambios'}
+                  {guardandoEdicion ? <Loading inline label="Guardando..." /> : 'Guardar cambios'}
                 </button>
                 <button type="button" className="boton boton--texto" onClick={cancelarEdicion}>
                   Cancelar

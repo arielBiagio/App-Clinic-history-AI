@@ -6,6 +6,7 @@ import { useNotasEvaluacion } from '../hooks/useNotasEvaluacion'
 import { useGrabadorAudio, formatearDuracion } from '../hooks/useGrabadorAudio'
 import { apiGet, apiPostFormData } from '../lib/api'
 import './CapturaPaciente.css'
+import Loading from '../components/Loading'
 
 export default function CapturaPaciente() {
   const navigate = useNavigate()
@@ -145,7 +146,7 @@ export default function CapturaPaciente() {
   if (cargandoPaciente) {
     return (
       <div className="captura">
-        <p className="captura__vacio">Cargando...</p>
+        <Loading label="Cargando paciente..." />
       </div>
     )
   }
@@ -161,15 +162,15 @@ export default function CapturaPaciente() {
 
   return (
     <div className="captura">
-      <div className="captura__header">
         <button
           type="button"
-          className="captura__volver"
+          className="pagina__volver"
           onClick={() => navigate(esPacienteExistente ? `/paciente/${pacienteIdExistente}` : '/')}
           aria-label="Volver"
         >
-          ←
+          <span aria-hidden="true">←</span> {esPacienteExistente ? 'Ficha del paciente' : 'Pacientes'}
         </button>
+      <div className="captura__header">
         <div className="captura__avatar">{iniciales}</div>
         <span className="captura__nombre">{nombrePaciente}</span>
         <span className="captura__contador">
@@ -181,6 +182,9 @@ export default function CapturaPaciente() {
         <p className="captura__aviso">Nueva evaluación para {nombrePaciente}</p>
       )}
 
+      <div className="captura__grid">
+      <section className="captura__notas" aria-label="Notas de la evaluación">
+      <p className="pagina__eyebrow">Nueva evaluación</p>
       <div className="captura__lista">
         {notas.length === 0 ? (
           <p className="captura__vacio">
@@ -200,12 +204,16 @@ export default function CapturaPaciente() {
       )}
       {error && <p className="captura__error">{error}</p>}
 
+      </section>
+      <section className="captura__composer" aria-label="Captura de notas">
+      <h2>Escribir una nota</h2>
       <div className="captura__input-row">
         <textarea
           ref={textareaRef}
           rows={1}
           className="captura__input"
           placeholder="Escribir una nota rápida..."
+          aria-label="Escribir una nota rápida"
           value={textoActual}
           onChange={handleCambiarTexto}
           onKeyDown={(e) => {
@@ -226,14 +234,21 @@ export default function CapturaPaciente() {
         </button>
       </div>
 
+      <div className="captura__agregar">
+        <span>Enter para agregar · Shift + Enter para un salto</span>
+        <button type="button" className="boton" onClick={handleAgregarTexto} disabled={grabando || !textoActual.trim()}>Agregar nota</button>
+      </div>
+
       <button
         type="button"
         className="boton boton--primario captura__guardar"
         onClick={handleGuardarPaciente}
         disabled={guardando || grabando}
       >
-        {guardando ? 'Guardando...' : 'Guardar paciente'}
+        {guardando ? <Loading inline label="Guardando..." /> : 'Guardar paciente'}
       </button>
+      </section>
+      </div>
     </div>
   )
 }

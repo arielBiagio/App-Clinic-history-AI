@@ -1,0 +1,24 @@
+.loading {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  min-height:180px;
+  padding:24px;
+  color:var(--text-muted);
+  font-size:14px;
+}
+.loading__spinner {
+  display:inline-block;
+  flex-shrink:0;
+  width:24px;
+  height:24px;
+  border:2px solid var(--border);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:loading-spin .8s linear infinite;
+}
+.loading--inline { display:inline-flex; min-height:0; padding:0; color:inherit; font-size:inherit; gap:8px; }
+.loading--inline .loading__spinner { width:16px; height:16px; border-color:currentColor; border-right-color:transparent; }
+@keyframes loading-spin { to { transform:rotate(360deg); } }
+@media(prefers-reduced-motion:reduce) { .loading__spinner { animation:none; } }

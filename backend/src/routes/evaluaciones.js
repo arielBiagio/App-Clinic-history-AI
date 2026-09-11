@@ -104,13 +104,13 @@ router.post('/', requireAuth, upload.any(), async (req, res) => {
 router.patch('/:id', requireAuth, async (req, res) => {
   const { contenido } = req.body
 
-  if (!contenido || typeof contenido !== 'object') {
+  if (!contenido || typeof contenido !== 'object' || Array.isArray(contenido)) {
     return res.status(400).json({ error: 'Falta el campo contenido.' })
   }
 
   const { data, error } = await supabaseAdmin
     .from('evaluaciones')
-    .update({ contenido })
+    .update({ contenido: { ...contenido, _meta: { updated_at: new Date().toISOString() } } })
     .eq('id', req.params.id)
     .select()
     .single()

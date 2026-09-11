@@ -6,7 +6,18 @@ import pacientesRouter from './routes/pacientes.js'
 
 const app = express()
 
-app.use(cors({ origin: process.env.FRONTEND_URL }))
+const allowedOrigins = new Set([
+  process.env.FRONTEND_URL,
+  ...(process.env.NODE_ENV !== 'production'
+    ? ['http://localhost:5173', 'http://127.0.0.1:5173']
+    : []),
+].filter(Boolean))
+
+app.use(cors({
+  origin(origin, callback) {
+    callback(null, allowedOrigins.has(origin))
+  },
+}))
 app.use(express.json())
 
 app.get('/health', (req, res) => res.json({ ok: true }))

@@ -5,7 +5,7 @@ import Login from './pages/Login'
 import ListaPacientes from './pages/ListaPacientes'
 import CapturaPaciente from './pages/CapturaPaciente'
 import DetallePaciente from './pages/DetallePaciente'
-import './App.css'
+import './design.css'
 
 function App() {
   return (
