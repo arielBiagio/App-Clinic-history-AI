@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import './ModalNuevoPaciente.css'
 
 export default function ModalNuevoPaciente({ onConfirmar, onCancelar }) {
@@ -21,10 +22,11 @@ export default function ModalNuevoPaciente({ onConfirmar, onCancelar }) {
     onConfirmar(nombreLimpio)
   }
 
-  return (
-    <div className="modal-overlay" role="dialog" aria-modal="true">
+  // Keep the fixed backdrop outside the animated route's containing block.
+  return createPortal(
+    <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="nuevo-paciente-titulo">
       <div className="modal">
-        <h2 className="modal__titulo">Nuevo paciente</h2>
+        <h2 id="nuevo-paciente-titulo" className="modal__titulo">Nuevo paciente</h2>
         <p className="modal__subtitulo">
           Ingresá el nombre para empezar a cargar notas.
         </p>
@@ -53,6 +55,7 @@ export default function ModalNuevoPaciente({ onConfirmar, onCancelar }) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

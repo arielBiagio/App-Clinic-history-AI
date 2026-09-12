@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <title>Historia Clínica IA</title>
+  <rect width="32" height="32" rx="8" fill="#285d48"/>
+  <rect x="9" y="7" width="14" height="20" rx="3" stroke="#fffefa" stroke-width="2"/>
+  <rect x="12" y="5" width="8" height="5" rx="2" fill="#fffefa"/>
+  <path d="M16 13v6m-3-3h6M13 23h6" stroke="#fffefa" stroke-width="2" stroke-linecap="round"/>
+</svg>
