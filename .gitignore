@@ -3,10 +3,12 @@ node_modules/
 
 # Builds
 dist/
+frontend/historia-clinica-cloudflare.zip
 
 # Variables de entorno (nunca se suben, tienen credenciales reales)
 .env
 .env.local
+backend/.render-deploy.env
 
 # Archivos temporales de audio del backend
 tmp/
@@ -14,3 +16,7 @@ tmp/
 # Editor / OS
 .DS_Store
 .vscode/
+
+# Supabase CLI local connection/cache metadata
+supabase/.temp/
+supabase/.branches/

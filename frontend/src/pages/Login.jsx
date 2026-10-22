@@ -39,7 +39,7 @@ export default function Login() {
       return
     }
 
-    navigate('/')
+    navigate(location.state?.from || '/')
   }
 
   return (

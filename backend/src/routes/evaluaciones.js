@@ -4,7 +4,6 @@ import fs from 'node:fs'
 import path from 'node:path'
 import os from 'node:os'
 import { requireAuth } from '../middleware/auth.js'
-import { supabaseAdmin } from '../lib/supabaseClients.js'
 import { transcribirAudio, limpiarTranscripcion, estructurarEvaluacion } from '../lib/openrouter.js'
 import { armarSystemPrompt, armarContenidoEvaluacion } from '../lib/prompt.js'
 import { schemaEvaluacion } from '../lib/schema.js'
@@ -34,12 +33,18 @@ router.post('/', requireAuth, upload.any(), async (req, res) => {
       return res.status(400).json({ error: 'Falta nombre (paciente nuevo) o pacienteId (existente).' })
     }
 
+    // Check patient ownership before processing or sending any clinical notes to AI.
+    if (pacienteId) {
+      const { data: paciente, error } = await req.supabase.from('pacientes').select('id').eq('id', pacienteId).maybeSingle()
+      if (error || !paciente) return res.status(404).json({ error: 'Paciente no encontrado.' })
+    }
+
     // 1) Paciente: crear si es nuevo, o usar el existente
     let idPaciente = pacienteId
     if (!idPaciente) {
-      const { data: nuevoPaciente, error: errorPaciente } = await supabaseAdmin
+      const { data: nuevoPaciente, error: errorPaciente } = await req.supabase
         .from('pacientes')
-        .insert({ nombre })
+        .insert({ nombre }) // profesional_id defaults to auth.uid() after the migration.
         .select()
         .single()
 
@@ -76,7 +81,7 @@ router.post('/', requireAuth, upload.any(), async (req, res) => {
     })
 
     // 4) Guardar la evaluación en Supabase
-    const { data: evaluacionGuardada, error: errorEvaluacion } = await supabaseAdmin
+    const { data: evaluacionGuardada, error: errorEvaluacion } = await req.supabase
       .from('evaluaciones')
       .insert({ paciente_id: idPaciente, contenido: evaluacionEstructurada })
       .select()
@@ -108,7 +113,7 @@ router.patch('/:id', requireAuth, async (req, res) => {
     return res.status(400).json({ error: 'Falta el campo contenido.' })
   }
 
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await req.supabase
     .from('evaluaciones')
     .update({ contenido: { ...contenido, _meta: { updated_at: new Date().toISOString() } } })
     .eq('id', req.params.id)
@@ -124,7 +129,7 @@ router.patch('/:id', requireAuth, async (req, res) => {
 })
 
 router.delete('/:id', requireAuth, async (req, res) => {
-  const { error } = await supabaseAdmin
+  const { error } = await req.supabase
     .from('evaluaciones')
     .delete()
     .eq('id', req.params.id)

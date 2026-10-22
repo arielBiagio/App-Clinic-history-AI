@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import RutaProtegida from './components/RutaProtegida'
 import Login from './pages/Login'
+import OAuthConsent from './pages/OAuthConsent'
 import ListaPacientes from './pages/ListaPacientes'
 import CapturaPaciente from './pages/CapturaPaciente'
 import DetallePaciente from './pages/DetallePaciente'
@@ -12,6 +13,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/oauth/consent" element={<OAuthConsent />} />
 
         <Route
           element={

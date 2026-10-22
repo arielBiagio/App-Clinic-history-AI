@@ -2,6 +2,13 @@ import { supabase } from './supabaseClient'
 
 const API_URL = import.meta.env.VITE_API_URL
 
+function endpoint(ruta) {
+  if (!API_URL) {
+    throw new Error('Falta configurar VITE_API_URL con la URL pública HTTPS del backend.')
+  }
+  return `${API_URL}${ruta}`
+}
+
 async function tokenActual() {
   const { data } = await supabase.auth.getSession()
   return data.session?.access_token
@@ -10,7 +17,7 @@ async function tokenActual() {
 // GET simple, para las lecturas (lista de pacientes, detalle).
 export async function apiGet(ruta) {
   const token = await tokenActual()
-  const respuesta = await fetch(`${API_URL}${ruta}`, {
+  const respuesta = await fetch(endpoint(ruta), {
     headers: { Authorization: `Bearer ${token}` },
   })
   if (!respuesta.ok) throw new Error(`Error ${respuesta.status} en GET ${ruta}`)
@@ -20,7 +27,7 @@ export async function apiGet(ruta) {
 // PATCH con JSON (para editar manualmente una evaluación).
 export async function apiPatch(ruta, body) {
   const token = await tokenActual()
-  const respuesta = await fetch(`${API_URL}${ruta}`, {
+  const respuesta = await fetch(endpoint(ruta), {
     method: 'PATCH',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -35,7 +42,7 @@ export async function apiPatch(ruta, body) {
 // DELETE (para borrar una evaluación).
 export async function apiDelete(ruta) {
   const token = await tokenActual()
-  const respuesta = await fetch(`${API_URL}${ruta}`, {
+  const respuesta = await fetch(endpoint(ruta), {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   })
@@ -45,7 +52,7 @@ export async function apiDelete(ruta) {
 // POST con FormData (para /api/evaluaciones, que manda notas + archivos de audio).
 export async function apiPostFormData(ruta, formData) {
   const token = await tokenActual()
-  const respuesta = await fetch(`${API_URL}${ruta}`, {
+  const respuesta = await fetch(endpoint(ruta), {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` }, // sin Content-Type: el navegador lo arma solo con boundary
     body: formData,

@@ -1,0 +1,6 @@
+project_id = "historia-clinica-ia"
+
+[functions.clinical-mcp]
+# OAuth discovery and 401 challenges are handled by the function itself.
+# Every MCP request still requires a verified user JWT in handler.ts.
+verify_jwt = false

@@ -43,9 +43,9 @@ de completar con supuestos.
 - **Cero alucinación en contexto clínico**: cada campo del formulario acepta
   `null`. El prompt prohíbe explícitamente inventar o inferir datos que no
   estén dichos de forma explícita en las notas.
-- **Seguridad de credenciales**: la key de OpenRouter y la `service_role key`
-  de Supabase viven solo en el backend, nunca se exponen al navegador. El
-  frontend solo tiene la `anon key`, protegida por Row Level Security.
+- **Seguridad de credenciales**: la key de OpenRouter vive solo en el backend.
+  Las consultas usan el JWT del profesional y una key pública bajo Row Level
+  Security, sin `service_role`. El aislamiento requiere la migración de propietarios.
 - **El audio no se persiste**: se transcribe y se borra inmediatamente del
   servidor.
 
@@ -59,6 +59,12 @@ entorno y comandos:
 En resumen, hacen falta dos terminales corriendo en paralelo (backend en
 `:3001`, frontend en `:5173`), más un proyecto de Supabase con las tablas de
 `/backend/sql/schema.sql` ya creadas.
+
+## MCP para agentes
+
+Servidor de solo lectura para Supabase Edge Functions con OAuth y aislamiento
+por profesional: [configuración, herramientas y activación pendiente](./supabase/README.md).
+La migración de propietarios debe aplicarse antes de habilitar el acceso OAuth.
 
 ## Estado del proyecto
 
