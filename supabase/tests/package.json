@@ -2,6 +2,6 @@
   "name": "clinical-mcp-security-tests",
   "private": true,
   "type": "module",
-  "scripts": { "test": "node --test rls.test.mjs" },
+  "scripts": { "test": "node --test rls.test.mjs ultimos-pacientes.test.mjs" },
   "devDependencies": { "@electric-sql/pglite": "0.3.14" }
 }

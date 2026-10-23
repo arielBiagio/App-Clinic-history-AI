@@ -1,11 +1,13 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { createClinicalHandler } from './clinical.ts'
+import { createClientAuthorizer, type ClientPolicy, type OAuthClientLookup } from './oauth-clients.ts'
 
-export type Config = { supabaseUrl: string; anonKey: string; resourceUrl: string; clientIds: string[]; origins: string[] }
+export type Config = ClientPolicy & { anonKey: string; resourceUrl: string; origins: string[] }
 type Identity = { db: SupabaseClient; claims: Record<string, unknown> }
 type Authenticate = (token: string) => Promise<Identity | null>
 
-export function createHandler(config: Config, authenticate?: Authenticate) {
+export function createHandler(config: Config, authenticate?: Authenticate, lookupClient?: OAuthClientLookup) {
+  const authorizeClient = createClientAuthorizer(config, lookupClient)
   const resource = new URL(config.resourceUrl)
   const metadataUrl = `${resource.href.replace(/\/$/, '')}/.well-known/oauth-protected-resource`
   // Supabase's gateway strips /functions/v1 before forwarding to Edge Runtime.
@@ -47,7 +49,7 @@ export function createHandler(config: Config, authenticate?: Authenticate) {
       headers.set('WWW-Authenticate', `Bearer resource_metadata="${metadataUrl}"`)
       return json({ error: 'Se requiere autorización OAuth.' }, 401)
     }
-    if (typeof claims.client_id !== 'string' || !config.clientIds.includes(claims.client_id)) return json({ error: 'Cliente OAuth no habilitado.' }, 403)
+    if (!await authorizeClient(claims.client_id)) return json({ error: 'Cliente OAuth no habilitado.' }, 403)
     if (req.method === 'GET') { headers.set('Allow', 'POST, OPTIONS'); return json({ error: 'SSE persistente no disponible. Usar Streamable HTTP POST.' }, 405) }
     const length = Number(req.headers.get('Content-Length') || 0)
     if (length > 32768) return json({ error: 'Solicitud demasiado grande.' }, 413)
