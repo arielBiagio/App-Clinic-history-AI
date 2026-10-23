@@ -1,45 +1,45 @@
 # Historia Clínica IA
 
-Aplicación web para registrar y consultar evaluaciones de pacientes a partir de
-notas de texto o audio. La IA organiza la información en una ficha clínica que el
-profesional puede revisar y editar.
+A web application for creating and viewing patient assessments from text or
+audio notes. AI organizes the information into a structured clinical record
+that the professional can review and edit.
 
-## Qué permite hacer
+## Features
 
-- Registrar pacientes y consultar su historial de evaluaciones.
-- Escribir notas o grabar audio para generar fichas estructuradas con IA.
-- Editar evaluaciones y ordenar pacientes por su actividad más reciente.
-- Usar una interfaz adaptada a escritorio y móvil.
-- Conectar un agente mediante MCP para consultar la información autorizada.
+- Register patients and view their assessment history.
+- Write notes or record audio to generate structured assessments with AI.
+- Edit assessments and sort patients by their most recent activity.
+- Use a responsive interface on desktop and mobile.
+- Connect an agent through MCP to query authorized information.
 
-Cada profesional accede únicamente a sus pacientes mediante autenticación y
-políticas de acceso en la base de datos.
+Each professional can only access their own patients through authentication and
+database access policies.
 
-## MCP de solo lectura
+## Read-only MCP
 
-El servidor MCP está integrado en este repositorio y permite a un agente buscar
-pacientes, listar los más recientes y leer sus consultas. La conexión utiliza
-OAuth y fue probada con Sesame.
+The MCP server is part of this repository. It lets an agent search for patients,
+list the most recent ones, and read their assessments. Connections use OAuth and
+have been tested with Sesame.
 
-El agente puede usar esa información para responder preguntas o elaborar
-resúmenes, pero no puede crear, modificar ni eliminar fichas mediante el MCP.
+The agent can use this information to answer questions or produce summaries,
+but it cannot create, modify, or delete records through the MCP server.
 
-Ver [herramientas y configuración del MCP](./supabase/README.md).
+See [MCP tools and setup](./supabase/README.md).
 
-## Tecnologías
+## Tech stack
 
-- Frontend: React, Vite y React Router.
-- Backend: Node.js, Express y OpenRouter para transcripción y estructuración con IA.
-- Datos y autenticación: Supabase, PostgreSQL y Row Level Security.
-- MCP: TypeScript, Supabase Edge Functions y OAuth con PKCE.
+- Frontend: React, Vite, and React Router.
+- Backend: Node.js, Express, and OpenRouter for AI transcription and structured output.
+- Data and authentication: Supabase, PostgreSQL, and Row Level Security.
+- MCP: TypeScript, Supabase Edge Functions, and OAuth with PKCE.
 
-## Desarrollo local
+## Local development
 
-Las instrucciones y variables de ejemplo están en cada carpeta:
+Setup instructions and example environment variables are available in each folder:
 
-- [Frontend](./frontend/README.md): interfaz web, puerto `5173`.
-- [Backend](./backend/README.md): API de la aplicación, puerto `3001`.
-- [Supabase y MCP](./supabase/README.md): consultas para agentes y migraciones.
+- [Frontend](./frontend/README.md): web interface, port `5173`.
+- [Backend](./backend/README.md): application API, port `3001`.
+- [Supabase and MCP](./supabase/README.md): agent queries and database migrations.
 
-Proyecto personal de aprendizaje y portfolio. Para demostraciones, usar datos
-ficticios. Las fichas generadas con IA requieren revisión profesional.
+A personal learning and portfolio project. Use fictional data for demonstrations.
+AI-generated clinical records require professional review.

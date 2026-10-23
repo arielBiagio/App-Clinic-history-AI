@@ -1,56 +1,59 @@
-# MCP clínico de solo lectura
+# Read-only clinical MCP
 
-Servidor MCP en Supabase Edge Functions para que un agente consulte los pacientes
-y evaluaciones del profesional que autoriza la conexión. Probado con Sesame.
+An MCP server running on Supabase Edge Functions. It lets an agent query the
+patients and assessments belonging to the professional who authorizes the
+connection. Tested with Sesame.
 
-## Herramientas
+## Tools
 
-| Herramienta | Qué hace |
+| Tool | Purpose |
 | --- | --- |
-| `buscar_pacientes` | Busca pacientes propios por nombre. |
-| `ultimos_pacientes` | Lista pacientes por alta o creación/edición de consultas, más recientes primero. |
-| `leer_historia_clinica` | Lee las evaluaciones de un paciente propio. |
-| `buscar_consultas` | Busca términos en campos clínicos, como diagnóstico o motivo de consulta. |
+| `buscar_pacientes` | Search the professional's own patients by name. |
+| `ultimos_pacientes` | List patients by registration or assessment creation/editing activity, newest first. |
+| `leer_historia_clinica` | Read assessments for one of the professional's patients. |
+| `buscar_consultas` | Search clinical fields, such as diagnosis or reason for consultation. |
 
-Las herramientas aceptan `limite` y `pagina`: la primera página es **0**, con
-10 resultados por defecto y un máximo de 30. Para continuar, usar
-`siguiente_pagina` con el mismo límite hasta que sea `null`.
+Tools accept `limite` and `pagina`: the first page is **0**, with 10 results by
+default and a maximum of 30. To continue, use `siguiente_pagina` with the same
+limit until it is `null`.
 
-El MCP no genera resúmenes ni busca bibliografía: el agente realiza esas tareas
-fuera del servidor. Los textos de las fichas son datos, no instrucciones.
+The MCP server does not generate summaries or search for research papers: the
+agent handles those tasks outside the server. Clinical notes are data, not
+instructions.
 
-## Acceso
+## Access
 
-- OAuth con PKCE y consentimiento del profesional.
-- Cada consulta usa el token del usuario y respeta el aislamiento mediante RLS.
-- Solo lectura: no permite crear, editar ni eliminar fichas.
-- Los clientes OAuth se validan por ID autorizado o por una política estricta de
-  registro público y callback exacto. Sin configuración, el acceso se deniega.
-- La credencial administrativa del servidor solo verifica metadatos de clientes
-  OAuth; nunca se utiliza para consultar historias clínicas.
+- OAuth with PKCE and the professional's consent.
+- Queries use the user's token and respect tenant isolation through RLS.
+- Read-only: no tools for creating, editing, or deleting records.
+- OAuth clients are checked against authorized IDs or a strict policy for
+  dynamically registered public clients with an exact callback URL.
+  Access is denied when no client policy is configured.
+- The server's administrative credential only checks OAuth client metadata;
+  it is never used to query clinical records.
 
-## Configuración
+## Setup
 
-1. Crear el esquema base de [la aplicación](../backend/sql/schema.sql) y revisar
-   las [migraciones](./migrations). En una instalación nueva, adaptar el propietario
-   de los registros existentes antes de aplicar la migración de profesionales.
-   No reaplicar migraciones ya registradas.
-2. Habilitar Supabase OAuth y configurar `/oauth/consent` en la URL de la aplicación.
-   Para clientes con registro dinámico, habilitar también esa opción en Supabase.
-3. Configurar los secretos indicados en
-   [`.env.example`](./functions/clinical-mcp/.env.example), sin incluirlos en Git.
-4. Desplegar la función:
+1. Create the [application's base schema](../backend/sql/schema.sql) and review
+   the [migrations](./migrations). For a new installation, update the owner of
+   existing records before applying the professional isolation migration.
+   Do not reapply migrations that are already recorded.
+2. Enable Supabase OAuth and configure `/oauth/consent` on the application's URL.
+   Enable dynamic client registration in Supabase if the client requires it.
+3. Configure the secrets listed in
+   [`.env.example`](./functions/clinical-mcp/.env.example). Do not commit them to Git.
+4. Deploy the function:
 
 ```sh
 supabase functions deploy clinical-mcp --project-ref PROJECT_REF --use-api
 ```
 
-En el agente, agregar `https://PROJECT_REF.supabase.co/functions/v1/clinical-mcp`
-y completar la autorización. No incluir claves ni tokens en esa URL.
+In the agent, add `https://PROJECT_REF.supabase.co/functions/v1/clinical-mcp`
+and complete authorization. Do not include keys or tokens in this URL.
 
-## Pruebas locales
+## Local tests
 
-Desde la raíz del repositorio, con Deno 2 y las dependencias de prueba instaladas:
+From the repository root, with Deno 2 and the test dependencies installed:
 
 ```sh
 deno task --cwd supabase/functions/clinical-mcp check
@@ -59,5 +62,5 @@ npm --prefix supabase/tests ci
 npm --prefix supabase/tests test
 ```
 
-Las pruebas usan datos ficticios y verifican herramientas, paginación, validación
-OAuth y separación entre profesionales.
+Tests use fictional data to verify tools, pagination, OAuth validation, and
+isolation between professionals.

@@ -1,9 +1,9 @@
 # Historia Clínica IA — Backend
 
-API Node.js + Express. Recibe notas de texto o audio, utiliza IA mediante
-OpenRouter para transcribir y estructurar evaluaciones, y las guarda en Supabase.
+A Node.js + Express API. It receives text or audio notes, uses AI through
+OpenRouter to transcribe and structure assessments, and stores them in Supabase.
 
-## Desarrollo local
+## Local development
 
 ```sh
 npm ci
@@ -11,25 +11,26 @@ cp .env.example .env
 npm run dev
 ```
 
-Completar `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `OPENROUTER_API_KEY` y
-`FRONTEND_URL`. La API utiliza el puerto `3001` por defecto.
-No subir `.env` ni claves privadas al repositorio.
+Set `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `OPENROUTER_API_KEY`, and
+`FRONTEND_URL`. The API uses port `3001` by default.
+Do not commit `.env` or private keys to the repository.
 
-## Endpoints principales
+## Main endpoints
 
-- `GET /health`: estado de la API.
-- `GET /api/pacientes`: listado por actividad reciente.
-- `GET /api/pacientes/:id`: paciente y evaluaciones.
-- `POST /api/evaluaciones`: crea una evaluación con notas de texto o audio.
-- `PATCH /api/evaluaciones/:id`: edita una evaluación.
-- `DELETE /api/pacientes/:id` y `DELETE /api/evaluaciones/:id`: elimina registros.
+- `GET /health`: API health check.
+- `GET /api/pacientes`: patients sorted by recent activity.
+- `GET /api/pacientes/:id`: a patient and their assessments.
+- `POST /api/evaluaciones`: create an assessment from text or audio notes.
+- `PATCH /api/evaluaciones/:id`: edit an assessment.
+- `DELETE /api/pacientes/:id` and `DELETE /api/evaluaciones/:id`: delete records.
 
-Las rutas de datos requieren el JWT del profesional y respetan las políticas RLS.
-Los tokens OAuth delegados se rechazan en esta API; el agente utiliza el
-[MCP de solo lectura](../supabase/README.md).
+Data endpoints require the professional's JWT and respect RLS policies.
+Delegated OAuth tokens are rejected by this API; agents use the
+[read-only MCP server](../supabase/README.md).
 
-## Despliegue
+## Deployment
 
-En Render: Node.js 22, directorio `backend`, build `npm ci`, inicio `npm start` y
-health check `/health`. Configurar `FRONTEND_URL` con el origen HTTPS del frontend
-y dejar que Render asigne `PORT`. Esta API no necesita una clave `service_role`.
+On Render: Node.js 22, root directory `backend`, build command `npm ci`, start
+command `npm start`, and health check `/health`. Set `FRONTEND_URL` to the
+frontend's exact HTTPS origin and let Render assign `PORT`.
+This API does not require a `service_role` key.

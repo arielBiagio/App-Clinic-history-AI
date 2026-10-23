@@ -1,9 +1,9 @@
 # Historia Clínica IA — Frontend
 
-Interfaz React + Vite para gestionar pacientes, registrar notas de texto o audio,
-consultar y editar evaluaciones, y autorizar conexiones MCP.
+A React + Vite interface for managing patients, capturing text or audio notes,
+viewing and editing assessments, and authorizing MCP connections.
 
-## Desarrollo local
+## Local development
 
 ```sh
 npm ci
@@ -11,25 +11,25 @@ cp .env.local.example .env.local
 npm run dev
 ```
 
-Completar `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` y `VITE_API_URL` en
-`.env.local`. La API local utiliza `http://localhost:3001` y Vite el puerto `5173`.
-Las variables `VITE_*` son públicas: nunca incluir claves privadas.
+Set `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `VITE_API_URL` in
+`.env.local`. The local API uses `http://localhost:3001`, and Vite uses port `5173`.
+`VITE_*` variables are public: never include private keys.
 
-## Rutas principales
+## Main routes
 
-- `/login`: inicio de sesión.
-- `/`: listado de pacientes.
-- `/nuevo`: notas para una nueva evaluación.
-- `/paciente/:id`: historial del paciente.
-- `/oauth/consent`: autorización de un agente.
+- `/login`: sign in.
+- `/`: patient list.
+- `/nuevo`: notes for a new assessment.
+- `/paciente/:id`: patient history.
+- `/oauth/consent`: agent authorization.
 
-## Build y pruebas
+## Build and tests
 
 ```sh
 npm test
 npm run build
 ```
 
-El build se genera en `dist/` y puede publicarse en Netlify o Cloudflare Pages.
-Configurar `VITE_API_URL` antes de compilar. El archivo `_redirects` permite abrir
-directamente las rutas de la aplicación.
+The build is generated in `dist/` and can be hosted on Netlify or Cloudflare Pages.
+Set `VITE_API_URL` before building. The `_redirects` file supports direct navigation
+to application routes.
