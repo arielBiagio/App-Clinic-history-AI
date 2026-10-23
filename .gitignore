@@ -20,3 +20,6 @@ tmp/
 # Supabase CLI local connection/cache metadata
 supabase/.temp/
 supabase/.branches/
+
+# Informes locales de diagnóstico (no publicar datos operativos)
+qa-report.md

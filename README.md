@@ -1,73 +1,45 @@
 # Historia Clínica IA
 
-Proyecto personal (portfolio) de un kinesiólogo que digitaliza la carga de
-evaluaciones de pacientes usando IA: el profesional dicta o escribe notas
-sueltas durante la consulta, y un LLM las estructura automáticamente en una
-ficha clínica estándar — sin inventar datos que no fueron mencionados.
+Aplicación web para registrar y consultar evaluaciones de pacientes a partir de
+notas de texto o audio. La IA organiza la información en una ficha clínica que el
+profesional puede revisar y editar.
 
-## Motivación
+## Qué permite hacer
 
-En kinesiología (y en salud en general), cargar la historia clínica a mano
-después de cada consulta es lento y repetitivo. La idea de este proyecto es
-que el profesional pueda anotar información en el momento (texto o audio, en
-cualquier orden, tantas veces como necesite) y que la IA arme la ficha
-estructurada — dejando explícitamente en blanco lo que no se mencionó, en vez
-de completar con supuestos.
+- Registrar pacientes y consultar su historial de evaluaciones.
+- Escribir notas o grabar audio para generar fichas estructuradas con IA.
+- Editar evaluaciones y ordenar pacientes por su actividad más reciente.
+- Usar una interfaz adaptada a escritorio y móvil.
+- Conectar un agente mediante MCP para consultar la información autorizada.
 
-## Cómo funciona
+Cada profesional accede únicamente a sus pacientes mediante autenticación y
+políticas de acceso en la base de datos.
 
-1. El profesional inicia una evaluación (paciente nuevo o uno existente) y va
-   agregando "notas sueltas": texto rápido o grabaciones de audio.
-2. Al guardar, el backend transcribe cada audio (Whisper), corrige errores de
-   reconocimiento con una segunda pasada de IA, y recién ahí estructura todo
-   el contenido en un JSON con un schema estricto (`temperature` baja,
-   campos `null` cuando el dato no está explícito en las notas).
-3. La ficha queda guardada en la base de datos y disponible para consultar,
-   con historial completo por paciente (tabs por fecha de evaluación).
+## MCP de solo lectura
 
-## Stack
+El servidor MCP está integrado en este repositorio y permite a un agente buscar
+pacientes, listar los más recientes y leer sus consultas. La conexión utiliza
+OAuth y fue probada con Sesame.
 
-**Frontend** — `/frontend`
-- React + Vite + React Router
-- Supabase Auth (single-user, sin pantalla de registro)
-- `MediaRecorder` nativo del navegador para grabar audio
+El agente puede usar esa información para responder preguntas o elaborar
+resúmenes, pero no puede crear, modificar ni eliminar fichas mediante el MCP.
 
-**Backend** — `/backend`
-- Node.js + Express
-- Supabase (Postgres + Row Level Security) para persistencia
-- OpenRouter como proveedor de IA: Whisper para transcripción, LLM con
-  structured outputs (JSON Schema estricto) para la extracción de campos
+Ver [herramientas y configuración del MCP](./supabase/README.md).
 
-## Principios de diseño
+## Tecnologías
 
-- **Cero alucinación en contexto clínico**: cada campo del formulario acepta
-  `null`. El prompt prohíbe explícitamente inventar o inferir datos que no
-  estén dichos de forma explícita en las notas.
-- **Seguridad de credenciales**: la key de OpenRouter vive solo en el backend.
-  Las consultas usan el JWT del profesional y una key pública bajo Row Level
-  Security, sin `service_role`. El aislamiento requiere la migración de propietarios.
-- **El audio no se persiste**: se transcribe y se borra inmediatamente del
-  servidor.
+- Frontend: React, Vite y React Router.
+- Backend: Node.js, Express y OpenRouter para transcripción y estructuración con IA.
+- Datos y autenticación: Supabase, PostgreSQL y Row Level Security.
+- MCP: TypeScript, Supabase Edge Functions y OAuth con PKCE.
 
-## Correr el proyecto localmente
+## Desarrollo local
 
-Ver el README de cada carpeta para el detalle completo de variables de
-entorno y comandos:
-- [`/frontend/README.md`](./frontend/README.md)
-- [`/backend/README.md`](./backend/README.md)
+Las instrucciones y variables de ejemplo están en cada carpeta:
 
-En resumen, hacen falta dos terminales corriendo en paralelo (backend en
-`:3001`, frontend en `:5173`), más un proyecto de Supabase con las tablas de
-`/backend/sql/schema.sql` ya creadas.
+- [Frontend](./frontend/README.md): interfaz web, puerto `5173`.
+- [Backend](./backend/README.md): API de la aplicación, puerto `3001`.
+- [Supabase y MCP](./supabase/README.md): consultas para agentes y migraciones.
 
-## MCP para agentes
-
-Servidor de solo lectura para Supabase Edge Functions con OAuth y aislamiento
-por profesional: [configuración, herramientas y activación pendiente](./supabase/README.md).
-La migración de propietarios debe aplicarse antes de habilitar el acceso OAuth.
-
-## Estado del proyecto
-
-Proyecto de aprendizaje/portfolio, en desarrollo activo. No está pensado para
-uso clínico real con datos de pacientes reales tal como está — es una
-demostración de integración full-stack con IA.
+Proyecto personal de aprendizaje y portfolio. Para demostraciones, usar datos
+ficticios. Las fichas generadas con IA requieren revisión profesional.
