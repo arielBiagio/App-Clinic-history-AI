@@ -17,6 +17,10 @@ Corre por defecto en `http://localhost:3001`.
 
 ## Render
 
+- API: `https://historia-clinica-api-9a5t.onrender.com`.
+- Servicio: `historia-clinica-api` (`srv-dbdbp23rjlhs73cnq09g`), Oregon, plan Free.
+- Conectado mediante URL pública del repositorio: los siguientes despliegues
+  requieren `Manual Deploy > Deploy latest commit` en Render.
 - Servicio web Node, rama `main`, directorio raíz `backend`.
 - Build: `npm ci`. Inicio: `npm start`. Health check: `/health`.
 - Node 22 fijado en `.node-version`; escucha en `0.0.0.0` y usa el `PORT` de Render.
